@@ -3,13 +3,19 @@
         <div class="left"><ons-back-button>Back</ons-back-button></div>
         <div class="center">Présentateur</div>
     </ons-toolbar>
-
+    <ons-list modifier="inset" style="margin:0;">
+        <ons-list-item>
+            <ons-icon icon="fa-user" size="20px" fixed-width="false"></ons-icon>
+            <span>&nbsp;Ajouter à mes contacts</span>
+            <ons-switch modifier="list-item" ng-model="ctrl.checked" ng-click="ctrl.toggle()"></ons-switch>
+        </ons-list-item>
+    </ons-list>
     <div class="profile-card">
 
         <img ng-src="data/images/{{ctrl.speaker.image}}" class="profile-image">
         <div class="profile-name">{{ctrl.speaker.name}}</div>
         <div class="profile-id">@{{ctrl.speaker.id}}</div>
-        <div class="profile-desc">{{ctrl.speaker.about}}</div>
+        <div class="profile-desc">{{ctrl.renderHTML(ctrl.speaker.about)}}</div>
         <div style="margin-top: 10px;">
             <a style="text-decoration:none;" ng-repeat="social in ctrl.speaker.socials"  ng-href="{{social.link}}">
                 <ons-icon icon="fa-{{social.class}}" size="20px" fixed-width="false" style="color: white"></ons-icon>
