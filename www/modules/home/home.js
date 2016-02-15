@@ -4,9 +4,8 @@ angular.module('conf.home', [])
 
         var changePage = function(pageLocation) {
             console.log('changing location ', pageLocation);
-            app.navi.pushPage(pageLocation);
+            app.menu.setMainPage(pageLocation, { closeMenu : true});
         }
-
 
         this.goToSessions = function() { changePage('modules/session/sessions.html');}
         this.goToSpeakers = function() { changePage('modules/speaker/speakers.html');}

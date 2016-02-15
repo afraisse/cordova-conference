@@ -3,8 +3,9 @@ angular.module('conf.shared', [])
 
         var changePage = function(pageLocation) {
             console.log('changing location ', pageLocation);
-            app.navi.pushPage(pageLocation);
-            app.menu.close();
+            app.menu.setMainPage(pageLocation, { closeMenu : true});
+            /*app.navi.pushPage(pageLocation);
+            app.menu.close();*/
         }
 
 

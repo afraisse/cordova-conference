@@ -92,3 +92,8 @@
     text-align: center;
     margin: 0 auto;
 }
+
+.bold {
+    font-weight: bolder;
+    text-transform: capitalize;
+}

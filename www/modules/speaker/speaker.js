@@ -17,4 +17,11 @@ angular.module('conf.speaker',[])
             app.navi.pushPage('modules/speaker/detail.html', { speaker: speaker });
         }
 
-    }]);
+    }])
+    .controller('speakerDetailController', function() {
+
+        var vm = this;
+
+        var page = app.navi.getCurrentPage();
+        vm.speaker = page.options.speaker;
+    });

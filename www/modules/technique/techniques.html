@@ -8,7 +8,10 @@
             <div class="center">Technique</div>
         </ons-toolbar>
 
-        <h1>Page Technique</h1>
-
+        <ons-list>
+            <ons-list-item ng-repeat="(key, value) in ctrl.info">
+                <span class="bold">{{key}}</span><span>&nbsp;:&nbsp;</span><span>{{value}}</span>
+            </ons-list-item>
+        </ons-list>
     </ons-page>
 </ons-navigator>

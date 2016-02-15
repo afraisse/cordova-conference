@@ -1,5 +1,5 @@
 angular.module('conf.session',[])
-    .controller('sessionController', ['$http', function($http) {
+    .controller('sessionController', ['$scope', '$http', function($scope, $http) {
 
         var vm = this;
         vm.sessions = [];
@@ -22,5 +22,12 @@ angular.module('conf.session',[])
         vm.showDetail = function(session) {
             app.navi.pushPage('modules/session/detail.html', { session : session });
         }
-    }]);
+    }])
+    .controller('sessionDetailController', function() {
+
+        var vm = this;
+
+        var page = app.navi.getCurrentPage();
+        vm.session = page.options.session;
+    });
 

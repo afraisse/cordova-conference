@@ -3,9 +3,7 @@ var app = ons.bootstrap('conferenceApp', [
     'conf.shared',
     'conf.home',
     'conf.session',
-    'conf.sessionDetail',
     'conf.speaker',
-    'conf.speakerDetail',
     'conf.technique'
 ])
 .config(function($compileProvider){
