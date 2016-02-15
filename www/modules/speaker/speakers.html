@@ -1,0 +1,25 @@
+<ons-page ng-controller="speakerController as ctrl">
+    <ons-toolbar>
+        <div class="left">
+            <ons-toolbar-button ng-click="app.menu.toggleMenu()"><ons-icon icon="fa-bars"></ons-icon></ons-toolbar-button>
+        </div>
+        <div class="center">Présentateurs</div>
+    </ons-toolbar>
+
+    <ons-list>
+        <ons-list-item modifier="chevron" class="list-item-container" ng-repeat="speaker in ctrl.speakers">
+            <div class="list-item-left">
+                <img ng-src="data/images/{{speaker.image}}" class="avator">
+            </div>
+            <div class="list-item-right">
+                <div class="list-item-content" ng-click="ctrl.showDetail(speaker)">
+                    <div class="name">{{speaker.name}}
+                        <span class="lucent">@{{speaker.id}}</span>
+                    </div>
+
+                    <span class="desc" ng-bind-html="ctrl.renderHTML(speaker.about)"></span><span>...</span>
+                </div>
+            </div>
+        </ons-list-item>
+    </ons-list>
+</ons-page>

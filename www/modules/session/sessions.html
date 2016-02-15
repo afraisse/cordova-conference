@@ -1,0 +1,15 @@
+<ons-page ng-controller="sessionController as ctrl">
+    <ons-toolbar>
+        <div class="left">
+            <ons-toolbar-button ng-click="app.menu.toggleMenu()"><ons-icon icon="fa-bars"></ons-icon></ons-toolbar-button>
+        </div>
+        <div class="center">Sessions</div>
+    </ons-toolbar>
+    <ons-list ng-repeat="(type, name) in ctrl.categories">
+        <ons-list-header>{{name}}</ons-list-header>
+        <ons-list-item
+                modifier="chevron tappable"
+                ng-repeat="session in ctrl.getSessions(type)"
+                ng-click="ctrl.showDetail(session)">{{session.title}}</ons-list-item>
+    </ons-list>
+</ons-page>

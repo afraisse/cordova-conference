@@ -1,0 +1,6 @@
+# Ignore build artefacts
+/platforms/
+/plugins/
+
+# IDE files
+/.idea/

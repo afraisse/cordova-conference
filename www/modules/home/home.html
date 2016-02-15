@@ -1,0 +1,20 @@
+<ons-navigator var="app.navi">
+    <ons-page ng-controller="homeController as ctrl">
+        <ons-toolbar>
+            <div class="left">
+                <ons-toolbar-button ng-click="app.menu.toggleMenu()"><ons-icon icon="fa-bars"></ons-icon></ons-toolbar-button>
+            </div>
+            <div class="center">Accueil</div>
+        </ons-toolbar>
+
+
+        <h1 class="text-center">{{ ctrl.title }}</h1>
+
+        <img ng-src="img/logo.png" class="img-center" />
+
+        <br>
+        <ons-button modifier="large" ng-click="ctrl.goToSessions()">Voir les sessions</ons-button><br>
+        <ons-button modifier="large" ng-click="ctrl.goToSpeakers()">Voir les présentateurs</ons-button>
+
+    </ons-page>
+</ons-navigator>
