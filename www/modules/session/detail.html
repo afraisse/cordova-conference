@@ -9,6 +9,7 @@
         <h1>{{ctrl.session.title}}</h1>
         <span>Salle : {{ctrl.session.confRoom}}</span>
         <h2><span ng-repeat="speaker in ctrl.session.speakers">@{{speaker}}&nbsp;</span></h2>
+        <ons-button modifier="large" ng-click="ctrl.showNotes(ctrl.session)">Mes notes</ons-button><br>
         <span>{{ctrl.session.desc}}</span>
     </div>
 </ons-page>
