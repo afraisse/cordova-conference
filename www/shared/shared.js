@@ -63,7 +63,7 @@ angular.module('conf.shared', [])
         }
 
         function getPictures(sessionId) {
-            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId], 'AUDIO')
+            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'PHOTO'])
                 .then(function (res) {
                     var urls = [];
                     for (var i = 0; i < res.rows.length; i++) {
