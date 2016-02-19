@@ -15,12 +15,31 @@
             <ons-button modifier="outline" ng-click="ctrl.choosePicture()">
                 <ons-icon icon="fa-photo" size="20px" fixed-width="false" style="color: #2b81af"></ons-icon>
             </ons-button>
+            <ons-button modifier="outline" ng-click="ctrl.recordAudio()">
+                <ons-icon icon="fa-microphone" size="20px" fixed-width="false" style="color: #2b81af"></ons-icon>
+            </ons-button>
+            <ons-button modifier="outline" ng-click="ctrl.recordVideo()">
+                <ons-icon icon="fa-video-camera" size="20px" fixed-width="false" style="color: #2b81af"></ons-icon>
+            </ons-button>
         </div>
         <ons-button modifier="large" ng-click="ctrl.saveNote()">Enregistrer</ons-button><br>
         <textarea class="text-area textarea--transparent notes" placeholder="Mes notes" ng-model="ctrl.notes">{{ctrl.notes}}</textarea>
         <ons-list>
+            <ons-list-header>Pictures</ons-list-header>
             <ons-list-item ng-repeat="url in ctrl.imageURLs">
                 <img ng-src="{{url}}"/>
+            </ons-list-item>
+        </ons-list>
+        <ons-list>
+            <ons-list-header>Audio</ons-list-header>
+            <ons-list-item ng-repeat="url in ctrl.audioURLs">
+                <audio src="{{url}}" controls></audio>
+            </ons-list-item>
+        </ons-list>
+        <ons-list>
+            <ons-list-header>Video</ons-list-header>
+            <ons-list-item ng-repeat="url in ctrl.videoURLs">
+                <video src="{{url}}" controls></video>
             </ons-list-item>
         </ons-list>
     </div>

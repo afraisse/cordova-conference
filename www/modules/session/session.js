@@ -36,7 +36,7 @@ angular.module('conf.session', [])
             app.navi.pushPage('modules/session/notes.html', {session: session});
         }
     })
-    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', function (NoteService, $cordovaToast, $cordovaCamera) {
+    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture', function (NoteService, $cordovaToast, $cordovaCamera, $cordovaCapture) {
 
         var vm = this;
         var page = app.navi.getCurrentPage();
@@ -45,10 +45,12 @@ angular.module('conf.session', [])
         vm.session = page.options.session;
         vm.notes = '';
         vm.imageURLs = [];
+        vm.audioURLs = [];
 
         vm.saveNote = saveNote;
         vm.takePicture = takePicture;
         vm.choosePicture = choosePicture;
+        vm.recordAudio = recordAudio;
 
         loadNote();
 
@@ -87,11 +89,22 @@ angular.module('conf.session', [])
 
             $cordovaCamera.getPicture(options).then(function (imageData) {
                 var imageURL = "data:image/jpeg;base64," + imageData;
-                NoteService.addPicture(vm.session.id, imageURL).then(function () {
+                NoteService.savePicture(vm.session.id, imageURL).then(function () {
                     vm.imageURLs.push(imageURL);
                     $cordovaToast.showShortBottom("Photo saved");
                 });
             });
+        }
+
+        function recordAudio() {
+            $cordovaCapture.captureAudio({limit : 1, duration : 5}).then(function (audio) {
+                vm.audioURLs.push(audio.fullPath);
+
+            })
+        }
+
+        function recordVideo() {
+
         }
 
         function choosePicture() {
@@ -109,7 +122,7 @@ angular.module('conf.session', [])
 
             $cordovaCamera.getPicture(options).then(function (imageData) {
                 var imageURL = "data:image/jpeg;base64," + imageData;
-                NoteService.addPicture(vm.session.id, imageURL).then(function () {
+                NoteService.savePicture(vm.session.id, imageURL).then(function () {
                     vm.imageURLs.push(imageURL);
                     $cordovaToast.showShortBottom("Photo saved");
                 });

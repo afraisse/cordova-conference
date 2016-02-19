@@ -34,11 +34,12 @@ angular.module('conf.shared', [])
         vm.save = save;
         vm.getNote = getNote;
         vm.getPictures = getPictures;
-        vm.addPicture = addPicture;
+        vm.savePicture = savePicture;
+        vm.saveAudio = saveAudio;
 
         function initializeDB() {
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS notes(sessionId text primary key, comment text)");
-            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS photos(id integer primary key autoincrement, data text, sessionId text, FOREIGN KEY(sessionId) REFERENCES NOTES(sessionId))");
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS media(id integer primary key autoincrement, data text, type text, sessionId text)");
         }
 
         function save(sessionId, comment) {
@@ -61,15 +62,8 @@ angular.module('conf.shared', [])
                 })
         }
 
-        function addPicture(sessionId, data) {
-            if (getNote(sessionId) === '')
-                return save(sessionId, "").then(savePicture(sessionId, data));
-            else
-                return savePicture(sessionId, data);
-        }
-
         function getPictures(sessionId) {
-            return $cordovaSQLite.execute(db, "SELECT data FROM photos where sessionId = ?", [sessionId])
+            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId], 'AUDIO')
                 .then(function (res) {
                     var urls = [];
                     for (var i = 0; i < res.rows.length; i++) {
@@ -83,12 +77,21 @@ angular.module('conf.shared', [])
         }
 
         function savePicture(sessionId, data) {
-            return $cordovaSQLite.execute(db, "INSERT INTO photos(data, sessionId) VALUES (?, ?)", [data, sessionId])
+            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'PHOTO', sessionId])
                 .then(function (res) {
                     console.log("photo saved");
                 }, function (err) {
                     console.error(err);
                 })
+        }
+
+        function saveAudio(sessionId, data) {
+            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'AUDIO', sessionId])
+                .then(function (res) {
+                    console.log("audio saved");
+                }, function (err) {
+                    console.error(err);
+                });
         }
 
     }])
