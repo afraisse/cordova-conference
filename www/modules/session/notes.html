@@ -23,7 +23,7 @@
             </ons-button>
         </div>
         <ons-button modifier="large" ng-click="ctrl.saveNote()">Enregistrer</ons-button><br>
-        <textarea class="text-area textarea--transparent notes" placeholder="Mes notes" ng-model="ctrl.notes">{{ctrl.notes}}</textarea>
+        <textarea class="text-area textarea--transparent notes" rows=5 placeholder="Mes notes" ng-model="ctrl.notes">{{ctrl.notes}}</textarea>
         <ons-list>
             <ons-list-header>Pictures</ons-list-header>
             <ons-list-item ng-repeat="url in ctrl.imageURLs">
@@ -32,14 +32,16 @@
         </ons-list>
         <ons-list>
             <ons-list-header>Audio</ons-list-header>
-            <ons-list-item ng-repeat="url in ctrl.audioURLs">
-                <audio src="{{url}}" controls></audio>
+            <ons-list-item>
+                <audio ng-repeat="url in ctrl.audioURLs" controls>
+                    <source src="{{url}}" type="audio/mpeg" />
+                </audio>
             </ons-list-item>
         </ons-list>
         <ons-list>
             <ons-list-header>Video</ons-list-header>
-            <ons-list-item ng-repeat="url in ctrl.videoURLs">
-                <video src="{{url}}" controls></video>
+            <ons-list-item>
+                <video ng-repeat="url in ctrl.videoURLs" src="{{url}}" controls></video>
             </ons-list-item>
         </ons-list>
     </div>

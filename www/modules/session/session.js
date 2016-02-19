@@ -56,7 +56,7 @@ angular.module('conf.session', [])
             //-------------------
             NoteService.openDB();
             //--------------------
-            
+
             vm.saveNote = saveNote;
             vm.takePicture = takePicture;
             vm.choosePicture = choosePicture;
@@ -76,10 +76,20 @@ angular.module('conf.session', [])
             function loadNote() {
                 NoteService.getNote(vm.session.id).then(function (notes) {
                     vm.notes = notes;
+                }, function () {
+                    $cordovaToast.showShortBottom("Failed to retrieve notes");
                 });
 
                 NoteService.getPictures(vm.session.id).then(function (pictures) {
                     vm.imageURLs = pictures;
+                }, function () {
+                    $cordovaToast.showLongBottom("Failed to retrieve pictures");
+                });
+
+                NoteService.getAudios(vm.session.id).then(function (audios) {
+                    vm.audioURLs = audios;
+                }, function () {
+                    $cordovaToast.showShortBottom("Failed to retrieve audio");
                 });
             }
 
@@ -91,7 +101,7 @@ angular.module('conf.session', [])
                     sourceType: Camera.PictureSourceType.CAMERA,
                     allowEdit: true,
                     encodingType: Camera.EncodingType.JPEG,
-                    targetWidth: 300,
+                    targetWidth: 200,
                     targetHeight: 200,
                     saveToPhotoAlbum: false,
                     correctOrientation: true
@@ -103,17 +113,31 @@ angular.module('conf.session', [])
                         vm.imageURLs.push(imageURL);
                         $cordovaToast.showShortBottom("Photo saved");
                     });
+                }, function (err) {
+                    console.error(err);
+                    $cordovaToast.showShortBottom("Couldn't get picture");
                 });
             }
 
             function recordAudio() {
-                $cordovaCapture.captureAudio({limit: 1, duration: 5}).then(function (audio) {
-                    vm.audioURLs.push(audio.fullPath);
+                $cordovaCapture.captureAudio({limit: 1, duration: 5}).then(function (mediafiles) {
+                    var fullPath;
+                    mediafiles.forEach(function (audioData) {
+                        fullPath = audioData.fullPath;
+                        NoteService.saveAudio(vm.session.id, fullPath).then(function () {
+                            vm.audioURLs.push(fullPath);
+                            $cordovaToast.showShortBottom("Audio record saved");
+                        }, function () {
+                            $cordovaToast.showShortBottom("Audio recording failed");
+                        });
+                    });
+                }, function (err) {
+                    console.error(err);
+                    $cordovaToast.showShortBottom("Couldn't record audio");
                 });
             }
 
             function recordVideo() {
-
             }
 
             function choosePicture() {
@@ -123,7 +147,7 @@ angular.module('conf.session', [])
                     sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
                     allowEdit: true,
                     encodingType: Camera.EncodingType.JPEG,
-                    targetWidth: 300,
+                    targetWidth: 200,
                     targetHeight: 200,
                     saveToPhotoAlbum: false,
                     correctOrientation: true
@@ -135,6 +159,9 @@ angular.module('conf.session', [])
                         vm.imageURLs.push(imageURL);
                         $cordovaToast.showShortBottom("Photo saved");
                     });
+                }, function (err) {
+                    console.error(err);
+                    $cordovaToast.showShortBottom("Couldn't pick photo");
                 });
             }
 

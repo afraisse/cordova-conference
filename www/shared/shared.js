@@ -34,6 +34,7 @@ angular.module('conf.shared', [])
         vm.save = save;
         vm.getNote = getNote;
         vm.getPictures = getPictures;
+        vm.getAudios = getAudios;
         vm.savePicture = savePicture;
         vm.saveAudio = saveAudio;
 
@@ -64,6 +65,20 @@ angular.module('conf.shared', [])
 
         function getPictures(sessionId) {
             return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'PHOTO'])
+                .then(function (res) {
+                    var urls = [];
+                    for (var i = 0; i < res.rows.length; i++) {
+                        var data = res.rows.item(i).data;
+                        if (data) urls.push(data);
+                    }
+                    return urls;
+                }, function (err) {
+                    console.error(err);
+                });
+        }
+
+        function getAudios(sessionId) {
+            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'AUDIO'])
                 .then(function (res) {
                     var urls = [];
                     for (var i = 0; i < res.rows.length; i++) {
