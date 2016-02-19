@@ -52,6 +52,7 @@ angular.module('conf.session', [])
             vm.notes = '';
             vm.imageURLs = [];
             vm.audioURLs = [];
+            vm.videoURLs = [];
 
             //-------------------
             NoteService.openDB();
@@ -61,6 +62,7 @@ angular.module('conf.session', [])
             vm.takePicture = takePicture;
             vm.choosePicture = choosePicture;
             vm.recordAudio = recordAudio;
+            vm.recordVideo = recordVideo;
 
             loadNote();
 
@@ -91,6 +93,12 @@ angular.module('conf.session', [])
                 }, function () {
                     $cordovaToast.showShortBottom("Failed to retrieve audio");
                 });
+
+                NoteService.getVideos(vm.session.id).then(function (videos) {
+                    vm.videoURLs = videos;
+                }, function () {
+                    $cordovaToast.showShortBottom("Failed to retrieve video");
+                });
             }
 
 
@@ -120,7 +128,7 @@ angular.module('conf.session', [])
             }
 
             function recordAudio() {
-                $cordovaCapture.captureAudio({limit: 1, duration: 5}).then(function (mediafiles) {
+                $cordovaCapture.captureAudio({limit: 3, duration: 5}).then(function (mediafiles) {
                     var fullPath;
                     mediafiles.forEach(function (audioData) {
                         fullPath = audioData.fullPath;
@@ -138,6 +146,21 @@ angular.module('conf.session', [])
             }
 
             function recordVideo() {
+                $cordovaCapture.captureVideo({limit:3, duration: 5}).then(function (mediaFiles) {
+                    var fullPath;
+                    mediaFiles.forEach(function (audioData) {
+                       fullPath = audioData.fullPath;
+                        NoteService.saveVideo(vm.session.id, fullPath).then(function () {
+                            vm.videoURLs.push(fullPath);
+                            $cordovaToast.showShortBottom("Video record saved");
+                        }, function () {
+                           $cordovaToast.showShortBottom("Video recording failed");
+                        });
+                    });
+                }, function (err) {
+                    console.error(err);
+                    $cordovaToast.showShortBottom("Couldn't record video");
+                });
             }
 
             function choosePicture() {

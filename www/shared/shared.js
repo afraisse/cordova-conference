@@ -28,15 +28,16 @@ angular.module('conf.shared', [])
 
         var vm = this;
         var db = $cordovaSQLite.openDB({name: "conferences"});
-        var setup = false;
 
         vm.openDB = initializeDB;
         vm.save = save;
         vm.getNote = getNote;
         vm.getPictures = getPictures;
         vm.getAudios = getAudios;
+        vm.getVideos = getVideos;
         vm.savePicture = savePicture;
         vm.saveAudio = saveAudio;
+        vm.saveVideo = saveVideo;
 
         function initializeDB() {
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS notes(sessionId text primary key, comment text)");
@@ -91,6 +92,20 @@ angular.module('conf.shared', [])
                 });
         }
 
+        function getVideos(sessionId) {
+            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'VIDEO'])
+                .then(function (res) {
+                    var urls = [];
+                    for (var i = 0; i < res.rows.length; i++) {
+                        var data = res.rows.item(i).data;
+                        if (data) urls.push(data);
+                    }
+                    return urls;
+                }, function (err) {
+                    console.error(err);
+                });
+        }
+
         function savePicture(sessionId, data) {
             return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'PHOTO', sessionId])
                 .then(function (res) {
@@ -104,6 +119,15 @@ angular.module('conf.shared', [])
             return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'AUDIO', sessionId])
                 .then(function (res) {
                     console.log("audio saved");
+                }, function (err) {
+                    console.error(err);
+                });
+        }
+
+        function saveVideo(sessionId, data) {
+            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'VIDEO', sessionId])
+                .then(function (res) {
+                    console.log("video saved");
                 }, function (err) {
                     console.error(err);
                 });
