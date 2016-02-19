@@ -54,7 +54,7 @@ angular.module('conf.shared', [])
         }
 
         function getNote(sessionId) {
-            return $cordovaSQLite.execute(db,"SELECT comment FROM notes WHERE sessionId = ?", [sessionId])
+            return $cordovaSQLite.execute(db, "SELECT comment FROM notes WHERE sessionId = ?", [sessionId])
                 .then(function (res) {
                     if (res.rows.length > 0)
                         return res.rows.item(0).comment;
@@ -64,8 +64,8 @@ angular.module('conf.shared', [])
                 })
         }
 
-        function getPictures(sessionId) {
-            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'PHOTO'])
+        function getMedia(sessionId, mediaType) {
+            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, mediaType])
                 .then(function (res) {
                     var urls = [];
                     for (var i = 0; i < res.rows.length; i++) {
@@ -78,59 +78,37 @@ angular.module('conf.shared', [])
                 });
         }
 
-        function getAudios(sessionId) {
-            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'AUDIO'])
+        function saveMedia(sessionId, mediaType, data) {
+            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, mediaType, sessionId])
                 .then(function (res) {
-                    var urls = [];
-                    for (var i = 0; i < res.rows.length; i++) {
-                        var data = res.rows.item(i).data;
-                        if (data) urls.push(data);
-                    }
-                    return urls;
-                }, function (err) {
-                    console.error(err);
-                });
-        }
-
-        function getVideos(sessionId) {
-            return $cordovaSQLite.execute(db, "SELECT data FROM media where sessionId = ? and type = ?", [sessionId, 'VIDEO'])
-                .then(function (res) {
-                    var urls = [];
-                    for (var i = 0; i < res.rows.length; i++) {
-                        var data = res.rows.item(i).data;
-                        if (data) urls.push(data);
-                    }
-                    return urls;
-                }, function (err) {
-                    console.error(err);
-                });
-        }
-
-        function savePicture(sessionId, data) {
-            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'PHOTO', sessionId])
-                .then(function (res) {
-                    console.log("photo saved");
+                    console.log("media saved");
                 }, function (err) {
                     console.error(err);
                 })
         }
 
+        function getPictures(sessionId) {
+            return getMedia(sessionId, 'PHOTO');
+        }
+
+        function getAudios(sessionId) {
+            return getMedia(sessionId, 'AUDIO');
+        }
+
+        function getVideos(sessionId) {
+            return getMedia(sessionId, 'VIDEO');
+        }
+
+        function savePicture(sessionId, data) {
+            return saveMedia(sessionId, 'PHOTO', data);
+        }
+
         function saveAudio(sessionId, data) {
-            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'AUDIO', sessionId])
-                .then(function (res) {
-                    console.log("audio saved");
-                }, function (err) {
-                    console.error(err);
-                });
+            return saveMedia(sessionId, 'AUDIO', data);
         }
 
         function saveVideo(sessionId, data) {
-            return $cordovaSQLite.execute(db, "INSERT INTO media(data, type, sessionId) VALUES (?, ?, ?)", [data, 'VIDEO', sessionId])
-                .then(function (res) {
-                    console.log("video saved");
-                }, function (err) {
-                    console.error(err);
-                });
+            return saveMedia(sessionId, 'VIDEO', data);
         }
 
     }])
@@ -168,18 +146,18 @@ angular.module('conf.shared', [])
         function getSessions() {
             return getProg()
                 .then(function (prog) {
-                    // Todo : hack categories
-                    /*"categories": {
-                     "mobile": "Mobile et Objets Connectés"
-                     , "web": "Web"
-                     , "cloud": "Cloud et Big Data"
-                     , "discovery": "Découverte"
-                     , "codelab-web": "CodeLab Web"
-                     , "codelab-cloud": "CodeLab Cloud"
-                     , "formation": "Formation"
-                     }*/
                     var categories = prog.categories;
                     var sessions = {};
+
+                    // TODO : hack categories
+                    categories['codelab-web'] = categories.codelabweb;
+                    categories['codelab-cloud'] = categories.codelabcloud;
+                    categories['mobile'] = categories.android;
+                    categories['discovery'] = categories.decouverte;
+                    delete categories.codelabweb;
+                    delete categories.codelabcloud;
+                    delete categories.android;
+                    delete categories.decouverte;
 
                     for (var key in categories) {
                         if (categories.hasOwnProperty(key)) {
