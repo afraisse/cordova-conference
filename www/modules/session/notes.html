@@ -8,7 +8,20 @@
 
     <div style="padding: 0px 12px;">
         <h1>{{ctrl.session.title}}</h1>
+        <div class="content-padded">
+            <ons-button modifier="outline" ng-click="ctrl.takePicture()">
+                <ons-icon icon="fa-camera" size="20px" fixed-width="false" style="color: #2b81af"></ons-icon>
+            </ons-button>
+            <ons-button modifier="outline" ng-click="ctrl.choosePicture()">
+                <ons-icon icon="fa-photo" size="20px" fixed-width="false" style="color: #2b81af"></ons-icon>
+            </ons-button>
+        </div>
         <ons-button modifier="large" ng-click="ctrl.saveNote()">Enregistrer</ons-button><br>
         <textarea class="text-area textarea--transparent notes" placeholder="Mes notes" ng-model="ctrl.notes">{{ctrl.notes}}</textarea>
+        <ons-list>
+            <ons-list-item ng-repeat="url in ctrl.imageURLs">
+                <img ng-src="{{url}}"/>
+            </ons-list-item>
+        </ons-list>
     </div>
 </ons-page>
