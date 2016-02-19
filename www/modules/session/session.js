@@ -1,16 +1,14 @@
 angular.module('conf.session', [])
-    .controller('sessionController', ['$scope', '$http', function ($scope, $http) {
+    .controller('sessionController', ['StorageService', function (StorageService) {
 
         var vm = this;
-        vm.sessions = [];
         vm.categories = [];
+        vm.sessions = [];
 
-        $http.get('data/devfest-2015.json')
-            .then(function (response) {
-                vm.categories = response.data.categories;
-                vm.sessions = response.data.sessions;
-            }, function (response) {
-                console.log(response);
+        StorageService.getSessions()
+            .then(function(data) {
+                vm.categories = data.categories;
+                vm.sessions = data.sessions;
             });
 
         vm.getSessions = function (category) {
@@ -38,43 +36,32 @@ angular.module('conf.session', [])
             app.navi.pushPage('modules/session/notes.html', {session: session});
         }
     })
-    .controller('sessionNoteController', ['$cordovaSQLite', '$cordovaToast', function ($cordovaSQLite, $cordovaToast) {
+    .controller('sessionNoteController', ['NoteService', '$cordovaToast', function (NoteService, $cordovaToast) {
 
         var vm = this;
-
-        vm.save = save;
-
         var page = app.navi.getCurrentPage();
+
         vm.session = page.options.session;
-
-        var db = $cordovaSQLite.openDB({name: "conferences"});
-        $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS notes(sessionId text primary key, comment text)")
-
         vm.notes = '';
-        console.log(vm.notes);
+
+        vm.saveNote = saveNote;
+
+        loadNote();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        function save() {
-            $cordovaSQLite.execute(db, "INSERT OR REPLACE INTO notes(sessionId, comment) VALUES (?, ?)", [vm.session.id, vm.notes])
-                .then(function (res) {
-                    console.log("saved")
-                }, function (err) {
-                    console.log("save error: "+ error);
+        function saveNote() {
+            NoteService.save(vm.session.id, vm.notes)
+                .then(function(res) {
+                    $cordovaToast.showShortBottom("Saved");
                 });
         }
 
-        function get() {
-            $cordovaSQLite.execute(db, "SELECT comment FROM notes WHERE sessionId = ?", [vm.session.id])
-                .then(function (res) {
-                    if (res.rows.length > 0)
-                        vm.notes = res.rows.item(0).comment;
-                    else
-                        console.log("notes not found");
-                }, function (err) {
-                    console.log(err);
-                    return '';
-                }).the
+        function loadNote() {
+            NoteService.get(vm.session.id)
+                .then(function(res) {
+                    vm.notes = res;
+                });
         }
 
     }]);

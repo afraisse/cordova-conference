@@ -10,7 +10,7 @@
             <ons-list-header>{{name}}</ons-list-header>
             <ons-list-item
                     modifier="chevron tappable"
-                    ng-repeat="session in ctrl.getSessions(type)"
+                    ng-repeat="session in ctrl.sessions[type]"
                     ng-click="ctrl.showDetail(session)">{{session.title}}</ons-list-item>
         </ons-list>
     </ons-page>
