@@ -42,8 +42,8 @@ angular.module('conf.session', [])
         }
 
     }])
-    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture',
-        function (NoteService, $cordovaToast, $cordovaCamera, $cordovaCapture) {
+    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture', '$cordovaActionSheet',
+        function (NoteService, $cordovaToast, $cordovaCamera, $cordovaCapture, $cordovaActionSheet) {
 
             var vm = this;
             var page = app.navi.getCurrentPage();
@@ -57,6 +57,14 @@ angular.module('conf.session', [])
                 targetHeight: 200,
                 saveToPhotoAlbum: false,
                 correctOrientation: true
+            };
+
+            var actionOpts = {
+                title: "Que faire avec l'image?",
+                buttonLabels: ['Partager'],
+                addCancelButtonWithLabel: 'Annuler',
+                androidEnableCancelButton : true,
+                addDestructiveButtonWithLabel : 'Supprimer'
             };
 
             vm.session = page.options.session;
@@ -74,6 +82,7 @@ angular.module('conf.session', [])
             vm.choosePicture = choosePicture;
             vm.recordAudio = recordAudio;
             vm.recordVideo = recordVideo;
+            vm.onTapPicture = onTapPicture;
 
             loadNote();
 
@@ -171,6 +180,39 @@ angular.module('conf.session', [])
                     console.error(err);
                     $cordovaToast.showShortBottom("Couldn't record video");
                 });
+            }
+
+            function onTapPicture(url) {
+                $cordovaActionSheet.show(actionOpts).then(function (btnIndex) {
+                    switch (btnIndex) {
+                        case 1 :
+                            deleteImage(url);
+                            break;
+                        case 2 :
+                            shareNote(url);
+                            break;
+                        case 3 :
+                            break;
+                        default :
+                            console.error("Invalid index : "+ btnIndex);
+                            $cordovaToast.showShortBottom("Please retry");
+                    }
+                });
+            }
+
+            function deleteImage(url) {
+                NoteService.deletePicture(url).then(function () {
+                    var index = vm.imageURLs.indexOf(url);
+                    vm.imageURLs.splice(index, 1);
+                    $cordovaToast.showShortBottom("Image deleted");
+                }, function () {
+                    $cordovaToast.showShortBottom("Couldn't delete image");
+                });
+            }
+
+            function shareNote(url) {
+                console.log("share");
+                console.log(url);
             }
 
         }]);

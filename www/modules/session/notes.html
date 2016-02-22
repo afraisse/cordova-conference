@@ -26,14 +26,14 @@
         <textarea class="text-area textarea--transparent notes" rows=5 placeholder="Mes notes" ng-model="ctrl.notes">{{ctrl.notes}}</textarea>
         <ons-list>
             <ons-list-header>Pictures</ons-list-header>
-            <ons-list-item ng-repeat="url in ctrl.imageURLs">
-                <img ng-src="{{url}}"/>
+            <ons-list-item ng-repeat="url in ctrl.imageURLs track by $index">
+                <img ng-src="{{url}}" ng-click="ctrl.onTapPicture(url)" />
             </ons-list-item>
         </ons-list>
         <ons-list>
             <ons-list-header>Audio</ons-list-header>
             <ons-list-item>
-                <audio ng-repeat="url in ctrl.audioURLs" controls>
+                <audio ng-repeat="url in ctrl.audioURLs track by $index" controls>
                     <source src="{{url}}" type="audio/mpeg" />
                 </audio>
             </ons-list-item>
@@ -41,7 +41,7 @@
         <ons-list>
             <ons-list-header>Video</ons-list-header>
             <ons-list-item>
-                <video ng-repeat="url in ctrl.videoURLs" src="{{url}}" controls></video>
+                <video ng-repeat="url in ctrl.videoURLs track by $index" src="{{url}}" controls></video>
             </ons-list-item>
         </ons-list>
     </div>

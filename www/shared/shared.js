@@ -38,6 +38,7 @@ angular.module('conf.shared', [])
         vm.savePicture = savePicture;
         vm.saveAudio = saveAudio;
         vm.saveVideo = saveVideo;
+        vm.deletePicture = deletePicture;
 
         function initializeDB() {
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS notes(sessionId text primary key, comment text)");
@@ -87,6 +88,15 @@ angular.module('conf.shared', [])
                 })
         }
 
+        function deleteMediaByData(mediaType, data) {
+            return $cordovaSQLite.execute(db, "DELETE FROM media WHERE type = ? and data = ?", [mediaType, data])
+                .then(function (res) {
+                    console.log("media deleted");
+                }, function (err) {
+                    console.err(err);
+                });
+        }
+
         function getPictures(sessionId) {
             return getMedia(sessionId, 'PHOTO');
         }
@@ -109,6 +119,10 @@ angular.module('conf.shared', [])
 
         function saveVideo(sessionId, data) {
             return saveMedia(sessionId, 'VIDEO', data);
+        }
+
+        function deletePicture(data) {
+            return deleteMediaByData('PHOTO', data);
         }
 
     }])
