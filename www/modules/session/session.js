@@ -50,7 +50,7 @@ angular.module('conf.session', [])
 
             var cameraOpts = {
                 quality: 50,
-                destinationType: Camera.DestinationType.DATA_URL,
+                destinationType: Camera.DestinationType.FILE_URI,
                 allowEdit: true,
                 encodingType: Camera.EncodingType.JPEG,
                 targetWidth: 200,
@@ -135,9 +135,8 @@ angular.module('conf.session', [])
 
             function getPicture(options) {
                 $cordovaCamera.getPicture(options).then(function (imageData) {
-                    var imageURL = "data:image/jpeg;base64," + imageData;
-                    NoteService.savePicture(vm.session.id, imageURL).then(function () {
-                        vm.imageURLs.push(imageURL);
+                    NoteService.savePicture(vm.session.id, imageData).then(function () {
+                        vm.imageURLs.push(imageData);
                         $cordovaToast.showShortBottom("Photo saved");
                     });
                 }, function (err) {
@@ -211,8 +210,7 @@ angular.module('conf.session', [])
             }
 
             function shareNote(url) {
-                $cordovaSocialSharing.share(vm.notes, vm.session.title, url, '').then(function (res) {
-                    console.log(res);
+                $cordovaSocialSharing.share(vm.notes, vm.session.title, url, null).then(function (res) {
                     $cordovaToast.showShortBottom("Shared");
                 }, function (err) {
                     console.error(err);
