@@ -114,7 +114,7 @@ angular.module('conf.session', [])
 
             function takePicture() {
                 var options = cameraOpts;
-                options.sourceType = Camera.PictureSourceType.PHOTOLIBRARY;
+                options.sourceType = Camera.PictureSourceType.CAMERA;
                 getPicture(options);
             }
 
