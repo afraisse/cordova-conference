@@ -2,20 +2,14 @@ angular.module('conf.session', [])
     .controller('sessionController', ['StorageService', function (StorageService) {
 
         var vm = this;
-        vm.categories = [];
-        vm.sessions = [];
+        vm.categories;
+        vm.sessions;
 
-        StorageService.getSessions()
+        StorageService.getSessionsByCategories()
             .then(function (data) {
                 vm.categories = data.categories;
                 vm.sessions = data.sessions;
             });
-
-        vm.getSessions = function (category) {
-            return vm.sessions.filter(function (session) {
-                return session.type == category;
-            });
-        }
 
         vm.showDetail = function (session) {
             app.navi.pushPage('modules/session/detail.html', {session: session});
@@ -89,10 +83,6 @@ angular.module('conf.session', [])
             vm.imageURLs = [];
             vm.audioURLs = [];
             vm.videoURLs = [];
-
-            //-------------------
-            //SessionService.openDB();
-            //--------------------
 
             vm.saveNote = saveNote;
             vm.takePicture = takePicture;

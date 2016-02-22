@@ -4,6 +4,7 @@ var app = ons.bootstrap('conferenceApp', [
     'conf.home',
     'conf.session',
     'conf.speaker',
+    'conf.schedule',
     'conf.technique',
     'conf.about'
 ])

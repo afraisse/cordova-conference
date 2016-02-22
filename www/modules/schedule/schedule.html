@@ -1,0 +1,36 @@
+<ons-navigator var="app.navi">
+    <ons-page ng-controller="scheduleController as ctrl">
+        <ons-toolbar>
+            <div class="left">
+                <ons-toolbar-button ng-click="app.menu.toggleMenu()"><ons-icon icon="fa-bars"></ons-icon></ons-toolbar-button>
+            </div>
+            <div class="center">Agenda</div>
+        </ons-toolbar>
+
+        <ons-list class="plan-list" ng-repeat="(key, value) in ctrl.hours">
+            <ons-list-item modifier="chevron" class="plan" ng-repeat="session in ctrl.sessions[key]" ng-click="">
+                <ons-row>
+                    <ons-col width="80px" class="plan-left">
+                        <div class="plan-date">{{value.hourStart}}:{{value.minStart}} - {{value.hourEnd}}:{{value.minEnd}}</div>
+                    </ons-col>
+
+                    <ons-col width="6px" class="plan-center" ng-style="{backgroundColor: ctrl.isFav(session) ? '#3399ff' : '#ccc'}">
+                    </ons-col>
+
+                    <ons-col class="plan-right">
+                        <div class="plan-name">{{session.title | limitTo : 50}}...</div>
+                        <div class="plan-info">
+                            <div>
+                                <ons-icon icon="fa-user"></ons-icon><span style="margin-left: 2px" ng-repeat="speaker in session.speakers">{{speaker}}&nbsp;</span>
+                            </div>
+                            <div>
+                                <ons-icon icon="fa-map-marker"></ons-icon><span style="margin-left: 2px">{{session.confRoom}}</span>
+                            </div>
+                        </div>
+                    </ons-col>
+                </ons-row>
+            </ons-list-item>
+
+        </ons-list>
+    </ons-page>
+</ons-navigator>

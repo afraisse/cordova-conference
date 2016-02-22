@@ -23,6 +23,10 @@ angular.module('conf.shared', [])
             changePage('modules/about/about.html');
         }
 
+        this.goToSchedule = function () {
+            changePage('modules/schedule/schedule.html');
+        }
+
     })
     .service("SessionService", ['$cordovaSQLite', function ($cordovaSQLite) {
         // This service interacts with a SQLite database to store and retrieve data on sessions.
@@ -45,9 +49,13 @@ angular.module('conf.shared', [])
         vm.deletePicture = deletePicture;
         vm.saveFeedback = saveFeedback;
         vm.getFeedback = getFeedback;
+        vm.saveFavorite = saveFavorite;
+        vm.removeFavorite = removeFavorite;
+        vm.getFavorites = getFavorites;
 
         function initializeDB() {
-            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS sessions(sessionId text primary key, feedback integer, favorite boolean)");
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS favorites(sessionId text primary key)");
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS feedback(sessionId text primary key, feedback integer)");
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS notes(sessionId text primary key, comment text)");
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS media(id integer primary key autoincrement, data text, type text, sessionId text)");
         }
@@ -105,7 +113,7 @@ angular.module('conf.shared', [])
         }
 
         function saveFeedback(sessionId, feedback) {
-            return $cordovaSQLite.execute(db, "INSERT OR REPLACE INTO sessions(sessionId, feedback) VALUES (?, ?)", [sessionId, feedback])
+            return $cordovaSQLite.execute(db, "INSERT OR REPLACE INTO feedback(sessionId, feedback) VALUES (?, ?)", [sessionId, feedback])
                 .then(function (res) {
                     console.log("feedback saved");
                 }, function (err) {
@@ -114,13 +122,43 @@ angular.module('conf.shared', [])
         }
 
         function getFeedback(sessionId) {
-            return $cordovaSQLite.execute(db, "SELECT feedback FROM sessions where sessionId = ?", [sessionId])
+            return $cordovaSQLite.execute(db, "SELECT feedback FROM feedback where sessionId = ?", [sessionId])
                 .then(function (res) {
                    if (res.rows.length > 0)
                        return res.rows.item(0).feedback;
                    else return null;
                 }, function (err) {
                     console.error(err);
+                });
+        }
+
+        function saveFavorite(sessionId) {
+            return $cordovaSQLite.execute(db, "INSERT OR REPLACE INTO favorites(sessionId) VALUES (?)", [sessionId])
+                .then(function (res) {
+                    console.log("fav saved");
+                }, function (err) {
+                    console.error(err);
+                });
+        }
+
+        function removeFavorite(sessionId) {
+            return $cordovaSQLite.execute(db, "DELETE FROM favorites WHERE sessionId = ?", [sessionId])
+                .then(function (res) {
+                    console.log("fav deleted");
+                }, function (err) {
+                   console.error(err);
+                });
+        }
+
+        function getFavorites() {
+            return $cordovaSQLite.execute(db, "SELECT sessionId FROM favorites")
+                .then(function (res) {
+                    var favs = []
+                    for (var i = 0; i< res.rows.length; i++)
+                        favs.push(res.rows.item(i));
+                    return favs;
+                }, function (err) {
+                   console.error(err);
                 });
         }
 
@@ -158,7 +196,8 @@ angular.module('conf.shared', [])
         var vm = this;
 
         vm.getSpeakers = getSpeakers;
-        vm.getSessions = getSessions;
+        vm.getSessionsByCategories = getSessionsByCategories;
+        vm.getSessionsByHours = getSessionsByHours;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -203,7 +242,7 @@ angular.module('conf.shared', [])
             }
         }
 
-        function getSessions() {
+        function getSessionsByCategories() {
             return getProg()
                 .then(function (prog) {
                     var categories = prog.categories;
@@ -224,6 +263,26 @@ angular.module('conf.shared', [])
                 }).catch(function (error) {
                     console.error(error);
                 });
+        }
+
+        function getSessionsByHours() {
+            return getProg().then(function (prog) {
+                var hours = prog.hours;
+                var sessions = {};
+
+                // returns an array indexed by hours
+                for (var key in hours) {
+                    if (hours.hasOwnProperty(key)) {
+                        sessions[key] = prog.sessions.filter(function (s) {
+                            return s.hour == key;
+                        })
+                    }
+                }
+                return {
+                    hours : hours,
+                    sessions: sessions
+                };
+            });
         }
 
         function getSpeakers() {
