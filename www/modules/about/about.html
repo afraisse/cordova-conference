@@ -1,14 +1,24 @@
 <ons-navigator var="app.navi">
-    <ons-page ng-controller="techController as ctrl">
-
+    <ons-page ng-controller="aboutController as ctrl">
         <ons-toolbar>
             <div class="left">
-                <ons-toolbar-button ng-click="app.menu.toggleMenu()"><ons-icon icon="fa-bars"></ons-icon></ons-toolbar-button>
+                <ons-toolbar-button ng-click="app.menu.toggleMenu()">
+                    <ons-icon icon="fa-bars"></ons-icon>
+                </ons-toolbar-button>
             </div>
             <div class="center">A propos</div>
         </ons-toolbar>
-
-        <h1>Page A propos</h1>
-
+        <div class="content-padded">
+            <h2>Description</h2>
+            <div>
+                <span>Application réalisée dans le cadre du cours Cordova à l'EMN. Elle permet de lister les conférences et conférenciers du DevFest2015 à nantes.</span>
+                <span>Version : {{ctrl.version}}</span>
+            </div>
+            <div>
+                <h3>A propos de l'auteur</h3>
+                <span>Adrian Fraisse is on </span>
+                <a href="" ng-click="ctrl.openProfile()">Twitter</a>
+            </div>
+        </div>
     </ons-page>
 </ons-navigator>

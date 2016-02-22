@@ -4,7 +4,8 @@ var app = ons.bootstrap('conferenceApp', [
     'conf.home',
     'conf.session',
     'conf.speaker',
-    'conf.technique'
+    'conf.technique',
+    'conf.about'
 ])
 .config(function($compileProvider){
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|blob|content):|data:image\//);
