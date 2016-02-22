@@ -10,6 +10,17 @@
         <span>Salle : {{ctrl.session.confRoom}}</span>
         <h2><span ng-repeat="speaker in ctrl.session.speakers">@{{speaker}}&nbsp;</span></h2>
         <ons-button modifier="large" ng-click="ctrl.showNotes(ctrl.session)">Mes notes</ons-button><br>
+        <div class="text-center">
+            <span>Feedback : </span>
+            <div class="button-bar" style="width:100%; margin-bottom: 10px;">
+                <div class="button-bar__item" ng-repeat="i in [1,2,3,4,5]" ng-click="ctrl.setStars(i)">
+                    <input type="radio" name="segment-a" ng-checked="i === ctrl.session.feedback">
+                    <button class="button-bar__button">
+                        <span>{{i}}&nbsp;</span><ons-icon icon="fa-star" size="15px" fixed-width="false" style="color: gold"></ons-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
         <span ng-bind-html="ctrl.renderHTML(ctrl.session.desc)"></span>
     </div>
 </ons-page>

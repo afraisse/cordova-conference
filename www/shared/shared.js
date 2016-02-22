@@ -24,10 +24,14 @@ angular.module('conf.shared', [])
         }
 
     })
-    .service("NoteService", ['$cordovaSQLite', function ($cordovaSQLite) {
+    .service("SessionService", ['$cordovaSQLite', function ($cordovaSQLite) {
+        // This service interacts with a SQLite database to store and retrieve data on sessions.
+        // We save notes, pictures, audio, video about a session. We can also mark a session on a range of 1 to 5 stars.
 
         var vm = this;
         var db = $cordovaSQLite.openDB({name: "conferences"});
+
+        initializeDB();
 
         vm.openDB = initializeDB;
         vm.save = save;
@@ -39,8 +43,11 @@ angular.module('conf.shared', [])
         vm.saveAudio = saveAudio;
         vm.saveVideo = saveVideo;
         vm.deletePicture = deletePicture;
+        vm.saveFeedback = saveFeedback;
+        vm.getFeedback = getFeedback;
 
         function initializeDB() {
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS sessions(sessionId text primary key, feedback integer, favorite boolean)");
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS notes(sessionId text primary key, comment text)");
             $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS media(id integer primary key autoincrement, data text, type text, sessionId text)");
         }
@@ -94,6 +101,26 @@ angular.module('conf.shared', [])
                     console.log("media deleted");
                 }, function (err) {
                     console.err(err);
+                });
+        }
+
+        function saveFeedback(sessionId, feedback) {
+            return $cordovaSQLite.execute(db, "INSERT OR REPLACE INTO sessions(sessionId, feedback) VALUES (?, ?)", [sessionId, feedback])
+                .then(function (res) {
+                    console.log("feedback saved");
+                }, function (err) {
+                    console.error(err);
+                });
+        }
+
+        function getFeedback(sessionId) {
+            return $cordovaSQLite.execute(db, "SELECT feedback FROM sessions where sessionId = ?", [sessionId])
+                .then(function (res) {
+                   if (res.rows.length > 0)
+                       return res.rows.item(0).feedback;
+                   else return null;
+                }, function (err) {
+                    console.error(err);
                 });
         }
 

@@ -21,7 +21,7 @@ angular.module('conf.session', [])
             app.navi.pushPage('modules/session/detail.html', {session: session});
         }
     }])
-    .controller('sessionDetailController', ['$sce', function ($sce) {
+    .controller('sessionDetailController', ['$sce', 'SessionService', '$cordovaToast', function ($sce, SessionService, $cordovaToast) {
 
         var vm = this;
 
@@ -30,7 +30,10 @@ angular.module('conf.session', [])
 
         vm.showNotes = showNotes;
         vm.renderHTML = renderHTML;
+        vm.setStars = setStars;
 
+        getStars();
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         function showNotes(session) {
@@ -40,10 +43,24 @@ angular.module('conf.session', [])
         function renderHTML(htmlCode) {
             return $sce.trustAsHtml(htmlCode);
         }
+        
+        function setStars(stars) {
+            SessionService.saveFeedback(vm.session.id, stars).then(function (res) {
+                $cordovaToast.showShortBottom("Feedback saved");
+            }, function (err) {
+                $cordovaToast.showShortBottom("Unable to save feedback");
+            });
+        }
+
+        function getStars() {
+            SessionService.getFeedback(vm.session.id).then(function (res) {
+               if (res) vm.session.feedback = res;
+            });
+        }
 
     }])
-    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture', '$cordovaActionSheet', '$cordovaSocialSharing',
-        function (NoteService, $cordovaToast, $cordovaCamera, $cordovaCapture, $cordovaActionSheet, $cordovaSocialSharing) {
+    .controller('sessionNoteController', ['SessionService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture', '$cordovaActionSheet', '$cordovaSocialSharing',
+        function (SessionService, $cordovaToast, $cordovaCamera, $cordovaCapture, $cordovaActionSheet, $cordovaSocialSharing) {
 
             var vm = this;
             var page = app.navi.getCurrentPage();
@@ -74,7 +91,7 @@ angular.module('conf.session', [])
             vm.videoURLs = [];
 
             //-------------------
-            NoteService.openDB();
+            //SessionService.openDB();
             //--------------------
 
             vm.saveNote = saveNote;
@@ -89,32 +106,32 @@ angular.module('conf.session', [])
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             function saveNote() {
-                NoteService.save(vm.session.id, vm.notes)
+                SessionService.save(vm.session.id, vm.notes)
                     .then(function (res) {
                         $cordovaToast.showShortBottom("Note saved");
                     });
             }
 
             function loadNote() {
-                NoteService.getNote(vm.session.id).then(function (notes) {
+                SessionService.getNote(vm.session.id).then(function (notes) {
                     vm.notes = notes;
                 }, function () {
                     $cordovaToast.showShortBottom("Failed to retrieve notes");
                 });
 
-                NoteService.getPictures(vm.session.id).then(function (pictures) {
+                SessionService.getPictures(vm.session.id).then(function (pictures) {
                     vm.imageURLs = pictures;
                 }, function () {
                     $cordovaToast.showLongBottom("Failed to retrieve pictures");
                 });
 
-                NoteService.getAudios(vm.session.id).then(function (audios) {
+                SessionService.getAudios(vm.session.id).then(function (audios) {
                     vm.audioURLs = audios;
                 }, function () {
                     $cordovaToast.showShortBottom("Failed to retrieve audio");
                 });
 
-                NoteService.getVideos(vm.session.id).then(function (videos) {
+                SessionService.getVideos(vm.session.id).then(function (videos) {
                     vm.videoURLs = videos;
                 }, function () {
                     $cordovaToast.showShortBottom("Failed to retrieve video");
@@ -135,7 +152,7 @@ angular.module('conf.session', [])
 
             function getPicture(options) {
                 $cordovaCamera.getPicture(options).then(function (imageData) {
-                    NoteService.savePicture(vm.session.id, imageData).then(function () {
+                    SessionService.savePicture(vm.session.id, imageData).then(function () {
                         vm.imageURLs.push(imageData);
                         $cordovaToast.showShortBottom("Photo saved");
                     });
@@ -150,7 +167,7 @@ angular.module('conf.session', [])
                     var fullPath;
                     mediafiles.forEach(function (audioData) {
                         fullPath = audioData.fullPath;
-                        NoteService.saveAudio(vm.session.id, fullPath).then(function () {
+                        SessionService.saveAudio(vm.session.id, fullPath).then(function () {
                             vm.audioURLs.push(fullPath);
                             $cordovaToast.showShortBottom("Audio record saved");
                         }, function () {
@@ -168,7 +185,7 @@ angular.module('conf.session', [])
                     var fullPath;
                     mediaFiles.forEach(function (audioData) {
                        fullPath = audioData.fullPath;
-                        NoteService.saveVideo(vm.session.id, fullPath).then(function () {
+                        SessionService.saveVideo(vm.session.id, fullPath).then(function () {
                             vm.videoURLs.push(fullPath);
                             $cordovaToast.showShortBottom("Video record saved");
                         }, function () {
@@ -200,7 +217,7 @@ angular.module('conf.session', [])
             }
 
             function deleteImage(url) {
-                NoteService.deletePicture(url).then(function () {
+                SessionService.deletePicture(url).then(function () {
                     var index = vm.imageURLs.indexOf(url);
                     vm.imageURLs.splice(index, 1);
                     $cordovaToast.showShortBottom("Image deleted");
