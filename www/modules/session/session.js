@@ -42,8 +42,8 @@ angular.module('conf.session', [])
         }
 
     }])
-    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture', '$cordovaActionSheet',
-        function (NoteService, $cordovaToast, $cordovaCamera, $cordovaCapture, $cordovaActionSheet) {
+    .controller('sessionNoteController', ['NoteService', '$cordovaToast', '$cordovaCamera', '$cordovaCapture', '$cordovaActionSheet', '$cordovaSocialSharing',
+        function (NoteService, $cordovaToast, $cordovaCamera, $cordovaCapture, $cordovaActionSheet, $cordovaSocialSharing) {
 
             var vm = this;
             var page = app.navi.getCurrentPage();
@@ -211,8 +211,13 @@ angular.module('conf.session', [])
             }
 
             function shareNote(url) {
-                console.log("share");
-                console.log(url);
+                $cordovaSocialSharing.share(vm.notes, vm.session.title, url, '').then(function (res) {
+                    console.log(res);
+                    $cordovaToast.showShortBottom("Shared");
+                }, function (err) {
+                    console.error(err);
+                    $cordovaToast.showShortBottom("Couldn't share note");
+                });
             }
 
         }]);
