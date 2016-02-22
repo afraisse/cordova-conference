@@ -144,8 +144,20 @@ angular.module('conf.shared', [])
             } else {
                 return $http.get("http://devfest2015.gdgnantes.com/assets/prog.json")
                     .then(function (response) {
-                        localStorage.setItem('prog', JSON.stringify(response.data));
-                        return response.data;
+                        var prog = response.data;
+
+                        // TODO : hack categories
+                        prog.categories['codelab-web'] = prog.categories.codelabweb;
+                        prog.categories['codelab-cloud'] = prog.categories.codelabcloud;
+                        prog.categories['mobile'] = prog.categories.android;
+                        prog.categories['discovery'] = prog.categories.decouverte;
+                        delete prog.categories.codelabweb;
+                        delete prog.categories.codelabcloud;
+                        delete prog.categories.android;
+                        delete prog.categories.decouverte;
+
+                        localStorage.setItem('prog', JSON.stringify(prog));
+                        return prog;
                     }, function (error) {
                         return $http.get('data/devfest-2015.json')
                             .then(function (response) {
@@ -162,16 +174,6 @@ angular.module('conf.shared', [])
                 .then(function (prog) {
                     var categories = prog.categories;
                     var sessions = {};
-
-                    // TODO : hack categories
-                    categories['codelab-web'] = categories.codelabweb;
-                    categories['codelab-cloud'] = categories.codelabcloud;
-                    categories['mobile'] = categories.android;
-                    categories['discovery'] = categories.decouverte;
-                    delete categories.codelabweb;
-                    delete categories.codelabcloud;
-                    delete categories.android;
-                    delete categories.decouverte;
 
                     for (var key in categories) {
                         if (categories.hasOwnProperty(key)) {

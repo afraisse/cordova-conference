@@ -17,8 +17,8 @@
         <div class="profile-id">@{{ctrl.speaker.id}}</div>
         <div class="profile-desc" ng-bind-html="ctrl.renderHTML(ctrl.speaker.about)"></div>
         <div style="margin-top: 10px;">
-            <a style="text-decoration:none;" ng-repeat="social in ctrl.speaker.socials"  ng-href="{{social.link}}">
-                <ons-icon icon="fa-{{social.class}}" size="20px" fixed-width="false" style="color: white"></ons-icon>
+            <a style="text-decoration:none;" ng-repeat="social in ctrl.speaker.socials"  ng-click="ctrl.openURL(social.link)">
+                <ons-icon icon="fa-{{ctrl.getSocialClass(social.class)}}" size="20px" fixed-width="false" style="color: white"></ons-icon>
             </a>
         </div>
     </div>

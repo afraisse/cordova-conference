@@ -23,7 +23,7 @@ angular.module('conf.speaker', ['ngCordova'])
         }
 
     }])
-    .controller('speakerDetailController', ['$sce', '$cordovaContacts', function ($sce, $cordovaContacts) {
+    .controller('speakerDetailController', ['$sce', '$cordovaContacts', '$cordovaInAppBrowser', function ($sce, $cordovaContacts, $cordovaInAppBrowser) {
 
         var vm = this;
 
@@ -34,6 +34,8 @@ angular.module('conf.speaker', ['ngCordova'])
 
         vm.toggle = toggle;
         vm.renderHTML = renderHTML;
+        vm.getSocialClass = getSocialClass;
+        vm.openURL = openURL;
 
         $cordovaContacts.find({filter: vm.speaker.id, fields: ['nickname']})
             .then(function (contactFound) {
@@ -86,6 +88,16 @@ angular.module('conf.speaker', ['ngCordova'])
 
         function renderHTML(htmlCode) {
             return $sce.trustAsHtml(htmlCode);
+        }
+
+        function getSocialClass(sClass) {
+            // TODO : hack socials, depuis le flux devfest on reçoit 'site' au lieu de 'link'
+            if (sClass == 'site') return 'link';
+            else return sClass;
+        }
+
+        function openURL(url) {
+            $cordovaInAppBrowser.open(url, '_blank', {});
         }
 
     }]);
