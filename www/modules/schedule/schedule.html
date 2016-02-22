@@ -8,13 +8,15 @@
         </ons-toolbar>
 
         <ons-list class="plan-list" ng-repeat="(key, value) in ctrl.hours">
-            <ons-list-item modifier="chevron" class="plan" ng-repeat="session in ctrl.sessions[key]" ng-click="">
+            <ons-list-item modifier="chevron" class="plan" ng-repeat="session in ctrl.sessions[key]" ng-click="ctrl.onTapSession(session.id)">
                 <ons-row>
                     <ons-col width="80px" class="plan-left">
-                        <div class="plan-date">{{value.hourStart}}:{{value.minStart}} - {{value.hourEnd}}:{{value.minEnd}}</div>
+                        <div class="plan-date">{{value.hourStart}}:{{value.minStart}}</div>
+                        <div>-</div>
+                        <div class="plan-date">{{value.hourEnd}}:{{value.minEnd}}</div>
                     </ons-col>
 
-                    <ons-col width="6px" class="plan-center" ng-style="{backgroundColor: ctrl.isFav(session) ? '#3399ff' : '#ccc'}">
+                    <ons-col width="6px" class="plan-center" ng-style="{backgroundColor: ctrl.isFav(session.id) ? '#3399ff' : '#ccc'}">
                     </ons-col>
 
                     <ons-col class="plan-right">
