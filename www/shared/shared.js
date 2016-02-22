@@ -156,6 +156,13 @@ angular.module('conf.shared', [])
                         delete prog.categories.android;
                         delete prog.categories.decouverte;
 
+                        // Sort speakers by id
+                        prog.speakers = prog.speakers.sort(function (a, b) {
+                            if (a.id < b.id) return -1;
+                            if (a.id > b.id) return 1;
+                            return 0;
+                        });
+
                         localStorage.setItem('prog', JSON.stringify(prog));
                         return prog;
                     }, function (error) {
@@ -175,6 +182,7 @@ angular.module('conf.shared', [])
                     var categories = prog.categories;
                     var sessions = {};
 
+                    // Returns an array indexed by categories
                     for (var key in categories) {
                         if (categories.hasOwnProperty(key)) {
                             sessions[key] = prog.sessions.filter(function (s) {
@@ -194,11 +202,7 @@ angular.module('conf.shared', [])
         function getSpeakers() {
             return getProg()
                 .then(function (prog) {
-                    return prog.speakers.sort(function (a, b) {
-                        if (a.id < b.id) return -1;
-                        if (a.id > b.id) return 1;
-                        return 0;
-                    });
+                    return prog.speakers;
                 }).catch(function (error) {
                     console.error(error);
                 });
