@@ -1,6 +1,8 @@
 # Projet Cordova-Conférence EMN
 
-Rendu Adrian Fraisse - FIL A3
+This is an Academic project at Ecole des Mines de Nantes. It was designed as the evaluation of the Mobile Development with Cordova class.
+
+It showcases the usage of Cordova along with the OnsenUI framework to design beautifull, hybrid apps.
 
 ## Liste des plugins utilisés : 
 
