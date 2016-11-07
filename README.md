@@ -1,8 +1,8 @@
 # Projet Cordova-Conférence EMN
 
-This is an Academic project at Ecole des Mines de Nantes. It was designed as the evaluation of the Mobile Development with Cordova class.
+This is an Academic project at Ecole des Mines de Nantes. It was designed as the evaluation of the "Mobile Development with Cordova" class in 3rd year.
 
-It showcases the usage of Cordova along with the OnsenUI framework to design beautifull, hybrid apps.
+It showcases the usage of Cordova, backed by AngularJS along with the OnsenUI framework to design beautifull, hybrid apps.
 
 ## Liste des plugins utilisés : 
 
